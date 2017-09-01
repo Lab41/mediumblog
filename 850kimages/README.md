@@ -48,7 +48,8 @@ Attempting to classify the Ford Mustang I would perform 4 searches:
 I would then capture the number of results returned by the search engine.
 
 ![excell picture](images/excel.png)  
-Vehicles and results for proposed body style labels 9Dec2016
+Vehicles and results for proposed body style labels 9Dec2016  
+
 You could take the largest value as the label, or use the array as vector to describe the class. I bet the vector would be better because of cars like the Chevrolet El Camino.
 
 ## Closing Thoughts
