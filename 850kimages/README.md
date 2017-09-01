@@ -14,7 +14,7 @@ It became apparent that I would need to work across several sites to get the num
 It was getting close to coding time; I needed to channel my inner lazy developer and think of ways of getting images on my terms. I definitely wanted to hand a list of attributes to something and have it return a series of images. A colleague and I thought that this is perfect occasion to abuse a search engine. I can supply color, make, and model; the search engine would mostly return images related to my query.
 
 ## The pipeline
-
+![pipeline picture](images/pipeline.png)  
 Running with this idea I found an article of the top 10 car colors, along with a GitHub repo where I could quickly extract around 1000 makes and models of vehicles.
 
 ### Make list of images
@@ -29,6 +29,7 @@ The actual image downloading took over 10 hours. Some sites were unresponsive or
 Even though I asked for images, sometimes you don’t always get what you want. I was not performing file type checking at download time. Spot checking showed I was sometimes downloading HTML instead of the image. The number of non-images was small compared to the number of images, though.
 I needed a program to detect if a file was indeed an image or not. The program was pretty speedy and cut through the million plus images in around 7 minutes.
 
+![multiprocessing picture](images/multiprocessing.png)  
 it’s A Bird… It’s A Plane… It’s python multiprocessing to the rescue
 
 ### Keep images with cars
@@ -46,16 +47,23 @@ Attempting to classify the Ford Mustang I would perform 4 searches:
 1. “Ford Mustang van”  
 I would then capture the number of results returned by the search engine.
 
+![excell picture](images/excel.png)  
 Vehicles and results for proposed body style labels 9Dec2016
 You could take the largest value as the label, or use the array as vector to describe the class. I bet the vector would be better because of cars like the Chevrolet El Camino.
 
 ## Closing Thoughts
-None of the pipeline stages need to be perfect.
-Each successive stage of the pipeline should improve result quality.
-More computationally expensive stages should be placed later in the pipeline if possible.
-Small numbers of non image of interest within the corpus is ok
-Utilizing multiple search engines improves dataset creation
-Not an end but a journey; use what what downloaded to make a better classifier and repeat.
-Total time for creating the scripts, downloading and processing the files took just shy of 24 hours.
-I now have a reasonably sizable labeled dataset containing the features I specified created with minimal human intervention.
-If you are interested in generating your own dataset checkout the git repo and watch Pelops for how the lab will be using the car data.
+* None of the pipeline stages need to be perfect.
+* Each successive stage of the pipeline should improve result quality.
+* More computationally expensive stages should be placed later in the pipeline if possible.
+* Small numbers of non image of interest within the corpus is ok
+* Utilizing multiple search engines improves dataset creation
+* Not an end but a journey; use what what downloaded to make a better classifier and repeat.
+
+Total time for creating the scripts, downloading and processing the files took just shy of 24 hours.  
+
+I now have a reasonably sizable labeled dataset containing the features I specified created with minimal human intervention.  
+
+If you are interested in generating your own dataset checkout the git repo [https://github.com/d-grossman/scrapeCars]  and watch Pelops [https://github.com/Lab41/pelops] for how the lab will be using the car data.  
+
+
+dgrossman
