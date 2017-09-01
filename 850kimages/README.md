@@ -45,7 +45,8 @@ Attempting to classify the Ford Mustang I would perform 4 searches:
 1. “Ford Mustang suv”
 1. “Ford Mustang truck”
 1. “Ford Mustang van”  
-I would then capture the number of results returned by the search engine.
+
+I would then capture the number of results returned by the search engine.  
 
 ![excell picture](images/excel.png)  
 Vehicles and results for proposed body style labels 9Dec2016  
