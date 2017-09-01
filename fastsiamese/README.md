@@ -12,7 +12,7 @@ A Siamese neural network is a neural network that contains two or more identical
 
 Siamese networks are often useful in creating a similarity measure between the inputs. Siamese networks are used to determine if images, text or audio contain similar content.
 
-~[siamese2](images/image2.png)  
+![siamese2](images/image2.png)  
 
 ## The now
 My current problem requires a good similarity measure between images for later processing.
@@ -38,6 +38,7 @@ I generated many experiments and fed the experiments in batches through the abov
 The problem with this method was iteration time. Getting a model trained to the accuracy I wanted would take about 2 days. I had too many Siamese topologies to explore and little patience waiting for results. I needed to rank my architectures and only refine models providing the best results.
 
 ## Back of napkin musings
+![siamese6](images/image6.png)  
 
 In terms of improving model training iteration time, a few thoughts come to mind:  
 
@@ -50,17 +51,17 @@ In terms of improving model training iteration time, a few thoughts come to mind
 ## Time memory tradeoffs
 Most of my processing time was spent evaluating Resnet50. To get around paying the Resnet50 tax (twice) I decided to pre-process all my images through Resnet50 and create an image-to-features lookup table.
 
-![siamese6](images/image6.png) 
+![siamese7](images/image7.png)  
 Image-to-features lookup table  
 
 Then I used the lookup table to feed the top of the Siamese network; instead of calculating the features.
 
-![siamese7](images/image7.png) 
+![siamese8](images/image8.png)  
 
 I amortized my Resnet50 evaluation costs over all the potential models I wanted to explore. Pre-processing my image set took half a day. The payoff came when I worked through 10 different architectures for the top of the Siamese network in a day.
 It still took about a day to do the final refinement (performing end-to-end training) as lookups could not be used there.
 
-##Takeaways
+## Takeaways
 * Take a look at your processing chain. You may be able to steal a technique from dynamic programming to make things better. In this case I made a lookup that was re-used across several models.
 * Overfitting needs special consideration. When making the training dataset it may be necessary to augment the data; it is easy for a network to memorize a dataset. Augmentation comes with a cost as a single input example can easily yield upwards of 30 augmented outputs (shift, flip, zoom, clip, rotate, etc.). Find your balance of speed vs. storage.
 * Architecture rankings may change after end-to-end training. Well-trained architectures appeared to receive about the same amount of boost from the end-to-end training. I ranked models by validation accuracy. I would then end-to-end train the model with the highest validation score. The validation-sorted listing made sure I always spent my resources on the architecture that maximized success.
