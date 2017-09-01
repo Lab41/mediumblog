@@ -162,3 +162,5 @@ To get a quick start on your own hook, clone/check out the verboten_words repo o
 ## Closing Thoughts
 * Git hooks are a low cost way to customize your workflow
 * Git hooks make it easier to automate doing the right thing with your repository; bake your compliance into the workflow.
+
+dgrossman
