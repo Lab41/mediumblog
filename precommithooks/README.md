@@ -21,19 +21,19 @@ Before you can take advantage of running the hooks, you need to install the pack
 
 There are a slew of existing checks that can be immediately added and utilized. I looked through the listing and found several that I thought would make future dgrossman’s life less miserable. (Future dgrossman’s life is seldom made better by past or present dgrossman’s decisions.)  
 
->autopep8-wrapper - Runs autopep8 over python source.
->check-case-conflict - Check for files that would conflict in case-insensitive filesystems.
->check-json - This hook checks json files for parseable syntax.
->pretty-format-json - This hook sets a standard for formatting JSON files.
->check-merge-conflict - Check for files that contain merge conflict strings.
->check-symlinks - Checks for symlinks which do not point to anything.
->check-yaml - This hook checks yaml files for parseable syntax.
->end-of-file-fixer - Ensures that a file is either empty, or ends with one newline.
+>autopep8-wrapper - Runs autopep8 over python source.  
+>check-case-conflict - Check for files that would conflict in case-insensitive filesystems.  
+>check-json - This hook checks json files for parseable syntax.  
+>pretty-format-json - This hook sets a standard for formatting JSON files.  
+>check-merge-conflict - Check for files that contain merge conflict strings.  
+>check-symlinks - Checks for symlinks which do not point to anything.  
+>check-yaml - This hook checks yaml files for parseable syntax.  
+>end-of-file-fixer - Ensures that a file is either empty, or ends with one newline.  
 >trailing-whitespace - This hook trims trailing whitespace.  
 
 
 After picking the pre-existing modules I needed to make a .pre-commit-config.yaml file in the root of my repo:
-`
+```
 -   repo: https://github.com/pre-commit/pre-commit
     sha: v0.9.4
     hooks:
@@ -56,26 +56,26 @@ After picking the pre-existing modules I needed to make a .pre-commit-config.yam
     sha: v0.3.0
     hooks:
     -   id: reorder-python-imports
-`  
+```  
 
 Finally, I was ready to perform the installation and verify the correctness of the .pre-commit-config.yaml file. Running pre-commit in the repo started the installation.  
 
 `~/work/myproj$ pre-commit`
->[INFO] Initializing environment for git@github.com:pre-commit/pre-commit-hooks.
->[INFO] Installing environment for git@github.com:pre-commit/pre-commit-hooks.
->[INFO] Once installed this environment will be reused.
->[INFO] This may take a few minutes…
->Validate Pre-Commit Config………………………(no files to check)Skipped
->autopep8 wrapper……………………………….(no files to check)Skipped
->Check for case conflicts………………………..(no files to check)Skipped
->Check JSON…………………………………….(no files to check)Skipped
->Check for merge conflicts……………………….(no files to check)Skipped
->Check for broken symlinks……………………….(no files to check)Skipped
->Check Yaml…………………………………….(no files to check)Skipped
->Fix End of Files……………………………….(no files to check)Skipped
->Pretty format JSON……………………………..(no files to check)Skipped
->Trim Trailing Whitespace………………………..(no files to check)Skipped
->Reorder python imports………………………….(no files to check)Skipped
+>[INFO] Initializing environment for git@github.com:pre-commit/pre-commit-hooks.  
+>[INFO] Installing environment for git@github.com:pre-commit/pre-commit-hooks.  
+>[INFO] Once installed this environment will be reused.  
+>[INFO] This may take a few minutes…  
+>Validate Pre-Commit Config………………………(no files to check)Skipped  
+>autopep8 wrapper……………………………….(no files to check)Skipped  
+>Check for case conflicts………………………..(no files to check)Skipped  
+>Check JSON…………………………………….(no files to check)Skipped  
+>Check for merge conflicts……………………….(no files to check)Skipped  
+>Check for broken symlinks……………………….(no files to check)Skipped  
+>Check Yaml…………………………………….(no files to check)Skipped  
+>Fix End of Files……………………………….(no files to check)Skipped  
+>Pretty format JSON……………………………..(no files to check)Skipped  
+>Trim Trailing Whitespace………………………..(no files to check)Skipped  
+>Reorder python imports………………………….(no files to check)Skipped  
 
 Now all the files I attempt to commit will need to pass before they can make it to the repo. Perfect time to add my hook for stopping bad words from making it to the repo.  
 
@@ -109,7 +109,7 @@ else:
 After writing up the program and testing it, I tagged the version v1.0.0 and then added it to my .pre-commit-config.yaml :  
 
 
-`
+```
 -   repo: https://github.com/pre-commit/pre-commit
     sha: v0.9.4
     hooks:
@@ -136,24 +136,24 @@ After writing up the program and testing it, I tagged the version v1.0.0 and the
     sha: v1.0.0
     hooks:
     -   id: verboten-words
-`
+```
 
 I then re-run pre-commit to install the new hook:  
 
->~/work/myproj$ pre-commit
->Validate Pre-Commit Config………………………(no files to check)Skipped
->autopep8 wrapper……………………………….(no files to check)Skipped
->Check for case conflicts………………………..(no files to check)Skipped
->Check JSON…………………………………….(no files to check)Skipped
->Check for merge conflicts……………………….(no files to check)Skipped
->Check for broken symlinks……………………….(no files to check)Skipped
->Check Yaml…………………………………….(no files to check)Skipped
->Fix End of Files……………………………….(no files to check)Skipped
->Pretty format JSON……………………………..(no files to check)Skipped
->Trim Trailing Whitespace………………………..(no files to check)Skipped
->Reorder python imports………………………….(no files to check)Skipped
->verboten words…………………………………(no files to check)Skipped
->My module for not allowing bad words is now installed.
+>~/work/myproj$ pre-commit  
+>Validate Pre-Commit Config………………………(no files to check)Skipped  
+>autopep8 wrapper……………………………….(no files to check)Skipped  
+>Check for case conflicts………………………..(no files to check)Skipped  
+>Check JSON…………………………………….(no files to check)Skipped  
+>Check for merge conflicts……………………….(no files to check)Skipped  
+>Check for broken symlinks……………………….(no files to check)Skipped  
+>Check Yaml…………………………………….(no files to check)Skipped  
+>Fix End of Files……………………………….(no files to check)Skipped  
+>Pretty format JSON……………………………..(no files to check)Skipped  
+>Trim Trailing Whitespace………………………..(no files to check)Skipped  
+>Reorder python imports………………………….(no files to check)Skipped  
+>verboten words…………………………………(no files to check)Skipped  
+>My module for not allowing bad words is now installed.  
 
 Now my bad word file can be used to keep specific words out of my repo, or be extended to handle more advanced searches for regular expressions that are also deemed naughty.  
 
