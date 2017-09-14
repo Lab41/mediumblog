@@ -39,13 +39,13 @@ This is literally the majority of the YFCC dataset; crap like this. It's bad, ye
 
 Deep learning have mostly been trained with only thousands of labels on heavily curated, iconic, single-labeled words. Something like the YFCC dataset, though, has millions of labels. I ended up cutting it off at 400,000, but even that many words is difficult to accommodate on the GPU. 
 
-![Large Neural Network](https://raw.githubusercontent.com/UCKarl/UCKarl.github.io/master/_posts/academic/images/largenn.jpg)
+![Large Neural Network](images/largenn.jpg)
 
 What *is* good at large vocabulary unstructured text are word embeddings, though. These have been called neural networks, but you should probably know that they're more wide than deep. One of the more well-known algorithms is *word2vec*, and in the subsections below, we’ll tell you how we adapted its most prized contribution, sampling, to our problem.
 
 #### Word2Vec
 
-In the past few years, not many papers have had more impact than Tomas Mikolov's [*word2vec*](https://papers.nips.cc/paper/5021-distributed-representations-of-words-and-phrases-and-their-compositionality.pdf). The major takeaway from *word2vec* is their use of negative sampling, through a broader idea of noise contrastive estimation. Here the negative in negative sampling just means that you’re sampling from the distribution of *unrelated* words. The function as written in his paper is:
+In the past few years, not many papers have had more impact than Tomas Mikolov's [*word2vec*](images/5021-distributed-representations-of-words-and-phrases-and-their-compositionality.pdf). The major takeaway from *word2vec* is their use of negative sampling, through a broader idea of noise contrastive estimation. Here the negative in negative sampling just means that you’re sampling from the distribution of *unrelated* words. The function as written in his paper is:
 
 $$ \max_{v_i, v_o} \log \sigma( v_o^T v_i ) + \sum_n \mathbb{E}_{n\sim p(i)}\left[ \log \sigma (- v_n^T v_i) \right] $$
 
@@ -87,7 +87,7 @@ My takeaway here was to use GPUs for deep learning. Use CPUs for wide learning. 
 
 So we trained on *flickr* data...lots of it. And then, we did some example image retrieval by querying random words and seeing what we came up with. Mind you, the vocabulary in YFCC100M is ginormous and you can choose any word you want to search for. (There was a few exceptions when we presented at GTC; someone yelled out "Brexit", and since our data scrape was in 2014, it wasn't in our vocabulary.) 
 
-![image](https://raw.githubusercontent.com/UCKarl/UCKarl.github.io/master/_posts/academic/images/yfcc-visualize.png)
+![image](images/yfcc-visualize.png)
 
 In the above, our search terms are on top, and the images returned are on the bottom. The original tags are also included, and you can see that most of them make no sense. It's why it's surprising that our approach worked at all! Just goes to show you that there's enough signal in open source content that training deep learning is possible. You can see more of these examples in our paper and if you download our code. We'll provide models if you are interested.
 
