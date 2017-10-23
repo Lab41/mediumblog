@@ -5,7 +5,7 @@ At a recent MMCommons event, we had the opportunity to sit in on a panel with co
 
 Separately and on the totally different domain of speaker separation, we reached the same conclusions when we implemented our very own source-contrastive estimation (SCE) algorithm, documented in another post by my colleague. We admit that it is a shamelessly gimmicky name (shh, don’t tell reviewers) for an enhancement on noise-contrastive estimation. But the idea remains the same: where you’re separating distributions from each other, i.e. contrastive estimation, sampling methods can be your ally.
 
-![Sampling is for everyone](images/costco-sample)
+![Sampling is for everyone](images/costco-sample.png)
 
 ---
 
@@ -70,4 +70,98 @@ The nonchalant, “Yeah — we haven’t written the gradient implementation
 
 This comment is April 6, 2017, but the implementation finished a few months before that. Whew, it’s a simple fix: you will need to get at least version 1.1, which you can do directly from the TensorFlow Github page. (They do nightly builds.)
 
+#### Gathering and Broadcasting
 
+The documentation for `gather_nd` is chock-full of examples, but the bottom line of code sums it all up:
+
+```
+sampled_vectors = tf.gather_nd(all_vectors, sampling_indices)
+```
+
+From a set of vectors (or matrices or tensors, whatever), you can extract samples from it however you like. And you can do this with all sorts of shapes! Let’s say I have an embedding that I’m trying to train up that’s of size 3 x 2, i.e. three examples, each with two dimensions. Try the below code out:
+
+```
+In [1]: import numpy as np; import tensorflow as tf
+In [2]: Vo = tf.Variable( np.array([[0,1], [2,3], [4,5]]) )
+In [3]: init_op = tf.global_variables_initializer()
+In [4]: sess = tf.Session()
+In [5]: sess.run(init_op)
+
+# If I want the element in the matrix Vo at index (0,1):
+In [6]: sess.run( tf.gather_nd( Vo, [[0,1]] ))
+Out[6]:
+array([0])
+
+# If I want the 3rd vector in the matrix Vo (which is index 2):
+In [7]: sess.run( tf.gather_nd( Vo, [[2]] ))
+Out[7]:
+array([[4,5]])
+```
+
+What’s really cool is that you might want a whole bunch of vectors to build a batch. You can repeat vectors a whole bunch of times:
+
+```
+# If I want the 3rd vector in the matrix Vo (which is index 2)...a bunch of times
+In [8]: sess.run( tf.gather_nd( Vo, [[2], [2], [2], [2]] ))
+Out[8]:
+array([[4, 5],
+       [4, 5],
+       [4, 5],
+       [4, 5]])
+```
+
+So that’s great, right? Almost. Let’s be clear: neural networks are all about tensor dot products, and navigating dimensions is especially hard. A typical situation occurs when you’ve gotten the samples (maybe from `gather_nd`) for a single input, and now you want to find the correlation to a feature vector a la word2vec. That is, you want to take a single vector and repeatedly dot it with a whole bunch of other vectors.
+
+Turns out broadcasting works especially well, and the TensorFlow version of broadcasting works exactly the same as the numpy version. The element-wise `*` operator will replicate as needed, and you need only sum the relevant indices. For example:
+
+```
+# A feature and 3 vectors, dimensionality 2.
+vi = tf.random_normal([2])
+Vo_sampled = tf.random_normal([3,2])
+
+# Correlation between vectors
+corr = tf.reduce_sum( Vo_sampled * vi, axis=-1 )
+```
+
+You ask, what about multi-dimensional tensors? Neural networks are optimized by batches, right? As it turns out, when your dimension is of size “1”, TensorFlow will expand to the appropriate size. (Think `repmat` and `.*` for all you  MATLAB users.) For example,
+
+```
+Say I have a couple tensors of different sizes:
+t1: 20 x 4 x 5 
+t2: 20 x 3 x 5
+
+Expand them (say with reshape or np.expand_dims)
+t1': 20 x 1 x 4 x 5 
+t2': 20 x 3 x 1 x 5
+
+Voila, you can take the elementwise product!
+t3 = t1' * t2', 
+t3: 20 x 3 x 4 x 5
+```
+
+#### Putting It All Together
+
+Let’s put it all together. Let’s say we have a batch of features. For each of the features we want to correlate with 3 vectors we’ve sampled from a set of vectors. (In reality, we’d sample 3 vectors 100 times for our SCE algorithm, but with the below code, the extension’s left out for argument’s sake.) This is how you would create that graph:
+
+```
+# Batch of features and a set of vectors to be optimized
+Vi = tf.random_normal( [100, 2] )
+Vo = tf.random_normal( [20, 2] ) 
+
+# Sample 3 vectors from Vo
+samples = np.expand_dims( np.random.choice(20, 3), axis=-1 )
+Vo_sampled = tf.gather_nd( Vo, samples ) 
+
+# Put a "1" where you want the vector to be replicated
+Vi_expanded = tf.reshape( Vi, [100, 1, 2] )
+Vo_sampled_expanded = tf.reshape( Vo_sampled, [1,   3, 2] ) 
+
+# Calculate the correlation
+corr = tf.reduce_sum( Vi_expanded * Vo_sampled_expanded, axis=-1 )
+```
+
+### Summary
+
+That should be all you need to know to implement your own sampled cost functions. To review, we’ve linked you to candidate sampling. We’ve talked about a few of their cost functions. Then, for the fancier friends who enjoy sampling and implementing new cost functions, we explained TensorFlow’s `gather_nd` function to index into your embedding arrays. Then we talked about tricks in broadcasting, namely using “1” in places where you’d like to repeat operations, effectively creating copies of an array for operation.
+
+We hope you enjoyed our TensorFlow tutorial. For more information, check out our Lab41 Github pages at: https://github.com/Lab41. Thanks for tuning in!
