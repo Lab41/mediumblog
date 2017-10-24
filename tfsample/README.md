@@ -1,18 +1,17 @@
 # New Sampling in Tensorflow
 ## Contrastive Estimation in Practice
 
-At a recent MMCommons event, we had the opportunity to sit in on a panel with computer vision scientists on dealing with on unstructured data. After giving a demonstration from our submitted work on open source image classification, it came as no surprise that the majority of the speakers piped up at length about how sampling methods have come to their aid. These amounted to various cases when the label space is too large or there wasn’t enough data. 
+At a recent MMCommons event, we had the opportunity to sit in on a panel with computer vision scientists on dealing with on unstructured data. After giving a demonstration from our submitted work on open source image classification, it came as no surprise that the majority of the speakers spoke at length about how sampling methods have come to their aid. These amounted to various cases when the label space is too large or there wasn’t enough data.
 
-Separately and on the totally different domain of speaker separation, we reached the same conclusions when we implemented our very own source-contrastive estimation (SCE) algorithm, documented in another post by my colleague. We admit that it is a shamelessly gimmicky name (shh, don’t tell reviewers) for an enhancement on noise-contrastive estimation. But the idea remains the same: where you’re separating distributions from each other, i.e. contrastive estimation, sampling methods can be your ally.
+In the separate domain of speaker separation, we reached the same conclusions, and we implemented our very own source-contrastive estimation (SCE) algorithm, documented in another post by my colleague. We admit that it is a shamelessly gimmicky name (shh, don’t tell reviewers) for an enhancement on noise-contrastive estimation. But the idea remains the same: where you’re separating distributions from each other, i.e. contrastive estimation, sampling methods can be your ally.
 
 ![Sampling is for everyone](images/costco-sample.png)
 
 ---
 
-How exactly does sampling help? Regarding sampling in the TensorFlow documentation, the phrase that you’re searching for (and the whole point of this post) is candidate sampling. The idea comes about when training a single example: we don’t want to go through the costly operation of evaluating every possible class, a big downer when you have a ton of labels. What you can do instead is build a function that only uses a small subset of your labels (i.e., sampling your universe of labels) to approximate the original “exhaustive” loss function, which may take the form of, say, the full softmax function.
+How exactly does sampling help? In the TensorFlow documentation, the phrase that you’re searching for (and the whole point of this post) is *candidate sampling*. The idea comes about when training a single example: we don’t want to go through the costly operation of evaluating every possible class, a big downer when you have a ton of labels. What you can do instead is build a function that only uses a small subset of your labels (i.e., sampling your universe of labels) to approximate the original “exhaustive” loss function, which may take the form of, say, the full softmax function.
 
-The technique is fairly powerful and the idea is proven out from word2vec embeddings to Restricted Boltzmann Machines. But how do you actually do it? What are the relevant TensorFlow calls? Turns out there are some easy solutions that you may not have known about that could save hours of effort. In this post, we’ll take you through the algorithms and tools we’ve experimented with, some of which have made their way into our code and publications. If we’re instructive, then by the end of this article, you should be able to optimize for a sampled version of your novel cost function, or any arbitrary cost function for that matter, one using TensorFlow. 
-
+The technique is fairly powerful and the idea is proven out from word2vec embeddings to *Restricted Boltzmann Machines*. But how do you actually do it? What are the relevant TensorFlow calls? It turns out there are some easy solutions that you may not have known about that could save hours of effort. In this post, we’ll take you through the algorithms and tools we’ve experimented with, some of which have made their way into our code and publications. By the end of this article, you should be able to optimize for a *sampled version* of your novel cost function, or any arbitrary cost function for that matter, one using TensorFlow.
 
 ---
 
@@ -27,18 +26,19 @@ tf.nn.nce_loss(weights, biases, inputs, labels, num_sampled,
                'mod', name='nce_loss')
 ```
 
-It wasn’t always the case that these guys were there for you though, and it surprises me how recently they’ve been added.  For example, stuff in `candidate_sampling_ops.py` has the last git pull just last month, and the documentation was uploaded in Dec 2015.  Back in the day, word2vec and most of the other label sampling methods didn’t have GPU support. In fact, look at the example on line 148 in TF 1.1; it still reads:
+This wasn’t always the case in Tensorflow, and it surprises me how recently they’ve been added.  For example,`candidate_sampling_ops.py` has the last git pull just last month, and the documentation was uploaded in Dec 2015.  Back in the day, word2vec and most of the other label sampling methods didn’t have GPU support. In fact, look at the example on line 148 in TF 1.1; it still reads:
 
 ```
 # Ops and variables pinned to the CPU because of missing GPU implementation 
 with tf.device('/cpu:0'):
 ```
 
-The lack of implementations of large layers was primarily a function of the fact that in cases where you would even need to sample the labels, the size of the weight matrices is proportional to an extraordinary amount of unique labels (e.g., in the YFCC corpus, it’s 400k words after it’s been pruned from six million words.) Memory on poor researcher GPUs had a hard time keeping up a few years ago.
+The dearth of these kind of implementations was especially problematic for large network layers where you would need to sample layers because the size of the weight matrices is proportional to the amount of unique labels (e.g., in the YFCC corpus, it’s 400k words *after it’s been pruned* from six million words.) Memory on poor researcher GPUs had a hard time keeping up a few years ago.
 
 ![Perhaps some NVLink?](images/please-sir.png)
 
-We experienced much the same, looking on in jealousy at the contributions from Google and Facebook. But then it happened…we finally got our Titan X cards. We got six of them, in fact, and then we were tickled to death. 
+Then it happened...we finally got our Titan X cards. We got six of them, in fact, and then we were tickled to death. 
+
 With this huge hammer, we looked around for the biggest nail. So late last year, we downloaded the biggest dataset we could get our hands on (100 million images) with the most amount of metadata (14GB), and threw the largest neural network we could at it. The trouble was, while we could find ways to fully use the 16GB of memory, the actual matrix-vector operation still took way too long. Enter candidate sampling, and why we’re here today.
 
 ### Canned Functions for Your First Pass
