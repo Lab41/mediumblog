@@ -2,6 +2,12 @@
 
 ![image showing cars on a street](images/matching-cars-1.jpeg)
 
+
+Lab41 just finished [Pelops](https://github.com/Lab41/pelops), a vehicle re-identification project using data from fixed video cameras. Last time I talked about “chipping”, that is extracting an image of a vehicle from a frame of video automatically. We found that background subtraction worked OK based on the small amount of labeled data we had.
+
+In this post I’ll go over the rest of the pipeline: **feature extraction** and **vehicle matching**.
+
+
 ![A cartoon of our Siamese network architecture. The two convolutional blocks (CNN) output vectors which are joined together and then passed through a set of fully connected (FC) layers for classification.](images/matching-cars-2.png)
 
 ![Two example images from VeRi showing the same truck passing two different cameras.](images/matching-cars-3.jpeg) ![](images/matching-cars-3b.jpeg)
