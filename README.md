@@ -8,6 +8,7 @@
 1. [Anything2Vec](anything2vec) - Embed any vector, explaining word2vec with matrices
 1. [Batch Normalization](batchnorm) - Batch normalization; explaining how it works
 1. [Sampling and Deep Neural Networks](yfcc100m) - A look at sampling methods when you want to use wide and deep neural networks
-1. [Matching Cars with Siamese Networks](matchingcars)
+1. [Matching Cars with Siamese Networks](matchingcars) - Using matching algorithms to compare cars from fixed traffic cameras
+1. [Object Localization without Deep Learning](objLocalization) - Make boxes around cars without the help of deep learning
 
 
