@@ -9,5 +9,5 @@
 1. [Batch Normalization](batchnorm) - Batch normalization; explaining how it works
 1. [Sampling and Deep Neural Networks](yfcc100m) - A look at sampling methods when you want to use wide and deep neural networks
 1. [Matching Cars with Siamese Networks](matchingcars)
-
+1. [Introducing source-contrastive estimation](sce) - Learning deep embeddings for audio source separation
 
