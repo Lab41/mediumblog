@@ -9,8 +9,6 @@ Listen to an audio recording made in the same environment, however, and you will
 
 > [Sample audio](singlemic.wav)
 
-###### Source: [LibriSpeech](http://www.openslr.org/12/) Corpus
-
 The field of source separation seeks to make signals like this usable by separating speakers onto separate tracks, recovering the original, much more intelligible, components of the mixture. Notice how the individual components of the mixture in Figure 1, on the right, have more orderly harmonics (the really narrow horizontal bands stacked on top of each other) and clearer structure in the vocal tract resonances (the thicker dark bands), compared to the mixture on the left:
 
 <img src="images/2.png" alt="Left, spectrogram of mixed audio. Right, individual components of the mixture." >
