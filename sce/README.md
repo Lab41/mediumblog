@@ -7,7 +7,7 @@ Have you ever been talking with someone in a room crowded with dozens of people 
 
 Listen to an audio recording made in the same environment, however, and you will realize why speech and engineering researchers have been stumped by the “[cocktail party problem](https://en.wikipedia.org/wiki/Cocktail_party_effect)” ever since the early days of signal processing. If you don’t have your two ears (and whole body, which also conducts sound) in the scene, the reality of a noisy environment like a bar or loud party is one of an undifferentiated din of overlapping speech, reverberation, and interference of all sorts. Recordings made in such environments are often unusable in their original state:
 
-> [Sample audio](https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/324319477&amp;color=%23ff5500&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;show_teaser=true&amp;visual=true)
+> [Sample audio](singlemic.wav)
 
 ###### Source: [LibriSpeech](http://www.openslr.org/12/) Corpus
 
